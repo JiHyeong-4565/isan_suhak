@@ -40,35 +40,80 @@ def get_determinant(matrix):
     for j in range(n):
         sign = (-1) ** j
         minor = [row[:j] + row[j+1:] for row in matrix[1:]]# 소행렬 구하기
-        determinant += sign * matrix[0][j] * get_determinant(minor)
+        determinant += sign * matrix[0][j] * get_determinant(minor)#소행렬식 계산
+    return determinant
+
+
+# 1. 행렬 입력 기능
+def get_matrix_input():
+    while True:
+        try:
+            n = int(input("행렬의 크기 n을 입력하세요 (예: 3): "))
+            if n <= 0:
+                print("n은 0보다 큰 정수여야 합니다.")
+                continue
+            break
+        except ValueError:
+            print("숫자를 입력해주세요.")#잘못된 입력시 다시 반복
+
+    print(f"{n}x{n} 행렬의 원소를 한 행씩 입력하세요 (각 원소는 공백으로 구분).")
+    matrix = []
+    for i in range(n):
+        while True:
+            try:
+                row_input = input(f"{i + 1}번째 행 입력: ")
+                row = [float(x) for x in row_input.split()]#n개의 원소를 받아 행렬저장
+                if len(row) != n:
+                    print(f"정확히 {n}개의 원소를 입력해야 합니다.")
+                    continue
+                matrix.append(row)
+                break
+            except ValueError:
+                print("원소는 숫자여야 합니다. 다시 입력해주세요.")#잘못된 입력시 다시 반복
+    return matrix
+
+# 2. 행렬식을 이용한 역행렬 계산 기능
+
+def get_determinant(matrix):
+    n = len(matrix)
+    if n == 1:
+        return matrix[0][0]
+    
+    #여인수 전개
+    determinant = 0
+    for j in range(n):
+        sign = (-1) ** j
+        minor = [row[:j] + row[j+1:] for row in matrix[1:]]# 1행을 기준으로 소행렬 구하기,j열 제외하고 구함
+        determinant += sign * matrix[0][j] * get_determinant(minor)#소행렬식 계산
     return determinant
 
 def get_adjugate_matrix(matrix):
     n = len(matrix)
     if n == 1:
-        return [[1]]
+        return [[1]]#0x0행렬의 행렬식은 1이므로 크기가 1일때의 수반행렬은 항상 1
 
     adjugate = []
     for i in range(n):
         cofactor_row = []
         for j in range(n):
             sign = (-1) ** (i + j)
-            minor = [row[:j] + row[j+1:] for row in (matrix[:i] + matrix[i+1:])]
-            cofactor = sign * get_determinant(minor)
-            cofactor_row.append(cofactor)
+            minor = [row[:j] + row[j+1:] for row in (matrix[:i] + matrix[i+1:])]#소행렬식 계산
+            cofactor = sign * get_determinant(minor)#여인수 행렬의 원소 계
+            cofactor_row.append(cofactor)#여인수 행렬에 추가
         adjugate.append(cofactor_row)
 
-    adjugate_transposed = [[adjugate[j][i] for j in range(n)] for i in range(n)]
+    adjugate_transposed = [[adjugate[j][i] for j in range(n)] for i in range(n)]#여인수 행렬 전치해 수반행렬로 변환
     return adjugate_transposed
 
 def inverse_by_determinant(matrix):
+    #행렬식을 통해 주어진 행렬이 역행렬이 존재하는지 확인후 0이 아니라면 역행렬 리턴
     determinant = get_determinant(matrix)
     if determinant == 0:
         return None
 
     adjugate = get_adjugate_matrix(matrix)
     n = len(matrix)
-    inverse = [[adjugate[i][j] / determinant for j in range(n)] for i in range(n)]
+    inverse = [[adjugate[i][j] / determinant for j in range(n)] for i in range(n)]#역행렬에 (수반행렬/행렬식)의 원소 채워넣기
     return inverse
 
  
@@ -76,8 +121,8 @@ def inverse_by_determinant(matrix):
  
 def inverse_by_gauss_jordan(matrix):
     n = len(matrix)
-    mat = copy.deepcopy(matrix)
-    identity = [[float(i == j) for j in range(n)] for i in range(n)]
+    mat = copy.deepcopy(matrix)#기존 행렬 보존하기위해 딥카피 수행
+    identity = [[float(i == j) for j in range(n)] for i in range(n)]#i=j(주대각 성분)일 때 부울함수를 float()를 통해 1로만들어 단위행렬 생성
 
     for i in range(n):
         if mat[i][i] == 0:
@@ -128,7 +173,7 @@ def compare_matrices(mat1, mat2, tolerance=1e-9):
     return True
 
  
-# ✨ 추가 기능: 역행렬 검산
+# 5. 추가 기능: 역행렬 검산
  
 def multiply_matrices(mat1, mat2):
     n = len(mat1)
@@ -144,6 +189,7 @@ def verify_inverse(original_matrix, inverse_matrix):
         return None # 검산 불가
 
     n = len(original_matrix)
+    
     # 원본 행렬과 역행렬을 곱함
     product = multiply_matrices(original_matrix, inverse_matrix)
 
@@ -158,7 +204,7 @@ def verify_inverse(original_matrix, inverse_matrix):
 
  
 # 메인 실행 함수
- 
+
 def main():
     input_matrix = get_matrix_input()
     print_matrix(input_matrix, "입력된 행렬")
@@ -175,7 +221,7 @@ def main():
     else:
         print("두 방법으로 계산된 역행렬의 결과가 다릅니다.")
 
-    # ✨ 추가된 검산 결과 출력
+    #  검산 결과 출력
     print("\n--- 역행렬 검산 (A * A^-1 = I) ---")
     verification_result = verify_inverse(input_matrix, inv_gj)
     if verification_result:
@@ -190,4 +236,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
