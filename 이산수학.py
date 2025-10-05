@@ -96,14 +96,14 @@ def inverse_by_gauss_jordan(matrix):
     identity = [[float(i == j) for j in range(n)] for i in range(n)]
 
     for i in range(n):
-        # 피벗이 0일 경우, 아래 행과 교환하여 0이 아니게 만듦
+        # 피벗(주대각 성분으로 설정)이 0일 경우, 아래 행과 교환하여 0이 아니게 만듦
         if mat[i][i] == 0:
             for j in range(i + 1, n):
                 if mat[j][i] != 0:
                     mat[i], mat[j] = mat[j], mat[i]
-                    identity[i], identity[j] = identity[j], identity[i]
+                    identity[i], identity[j] = identity[j], identity[i] # 단위행렬에도 같은 연산수행
                     break
-            else: # 교환할 행이 없으면 역행렬이 존재하지 않음
+            else: # 교환할 행이 없으면 역행렬이 존재하지 않음(열이 000이라는 소리이므로)
                 return None
 
         # 피벗을 1로 만들기
@@ -120,12 +120,12 @@ def inverse_by_gauss_jordan(matrix):
                 for k in range(i, n):
                     mat[j][k] -= factor * mat[i][k]
                 for k in range(n):
-                    identity[j][k] -= factor * identity[i][k]
+                    identity[j][k] -= factor * identity[i][k] # 단위행렬에도 같은연산수행
 
-    return identity
+    return identity # 가우스 조르단 소거법으로 구해진 역행렬 리턴
 
 # ===================================================================
-# 4. 유틸리티 기능 (출력, 비교, 검산)
+# 4.  출력, 비교 기능
 # ===================================================================
 def print_matrix(matrix, name="행렬"):
     """행렬을 지정된 이름과 함께 소수점 4자리까지 출력합니다."""
@@ -148,6 +148,9 @@ def compare_matrices(mat1, mat2, tolerance=1e-9):
                 return False
     return True
 
+# ===================================================================
+# 5. 추가 기능 (검산)
+# ===================================================================
 def multiply_matrices(mat1, mat2):
     """두 행렬을 곱한 결과를 반환합니다."""
     n = len(mat1)
@@ -178,7 +181,7 @@ def verify_inverse(original_matrix, inverse_matrix):
     return is_correct, product
 
 # ===================================================================
-# 5. 메인 실행 함수
+# 6. 메인 실행 함수
 # ===================================================================
 def main():
     """프로그램의 주 실행 로직을 담당합니다."""
