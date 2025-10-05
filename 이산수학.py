@@ -35,7 +35,7 @@ def get_matrix_input():
 # 2. 행렬식을 이용한 역행렬 계산 기능
 # ===================================================================
 def get_determinant(matrix):
-    """재귀 함수를 이용해 행렬식을 계산합니다 (여인수 전개 사용)."""
+    """행렬식 계산(여인수 전개 사용)"""
     n = len(matrix)
     if n == 1:
         return matrix[0][0]
@@ -50,7 +50,7 @@ def get_determinant(matrix):
     return determinant
 
 def get_adjugate_matrix(matrix):
-    """수반 행렬(Adjugate Matrix)을 계산합니다."""
+    """수반 행렬 계산"""
     n = len(matrix)
     if n == 1:
         # 0x0 행렬의 행렬식은 1이므로 크기가 1일때의 수반행렬은 항상 1
@@ -216,5 +216,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
