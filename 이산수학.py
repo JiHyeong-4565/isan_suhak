@@ -137,7 +137,7 @@ def print_matrix(matrix, name="행렬"):
         print(" ".join(f"{elem:10.4f}" for elem in row))
 
 def compare_matrices(mat1, mat2, tolerance=1e-9):
-    """두 행렬이 오차 범위(tolerance) 내에서 동일한지 비교합니다."""
+    """두 행렬이 오차 범위(tolerance) 내에서 동일한지 비교합니다.{(1/3)같은 경우에 값이 다르다고 나올확률 있으므로 오차범위(1e-9) 설정}"""
     if mat1 is None or mat2 is None:
         return mat1 is None and mat2 is None
     if len(mat1) != len(mat2) or len(mat1[0]) != len(mat2[0]):
@@ -164,7 +164,7 @@ def multiply_matrices(mat1, mat2):
 def verify_inverse(original_matrix, inverse_matrix):
     """원본 행렬과 역행렬을 곱하여 단위 행렬이 나오는지 검산합니다."""
     if inverse_matrix is None:
-        return None # 검산 불가
+        return None # 역행렬이 없으므로 검산 불가
 
     n = len(original_matrix)
     
@@ -216,4 +216,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
