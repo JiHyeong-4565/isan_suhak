@@ -118,7 +118,7 @@ def inverse_by_gauss_jordan(matrix):
             if i != j:
                 factor = mat[j][i]
                 for k in range(i, n):
-                    mat[j][k] -= factor * mat[i][k]
+                    mat[j][k] -= factor * mat[i][k]#기본행 연산으로 factor를 0으로 만듦
                 for k in range(n):
                     identity[j][k] -= factor * identity[i][k] # 단위행렬에도 같은연산수행
 
@@ -216,3 +216,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
